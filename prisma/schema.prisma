@@ -1,0 +1,143 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                String           @id @default(uuid())
+  email             String           @unique
+  password          String
+  name              String
+  role              String           @default("USER") // USER, MERCHANT, ADMIN
+  licenseVerified   Boolean          @default(false)
+  licenseNumber     String?
+  pointsBalance     Int              @default(0)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  rentals           Rental[]
+  purchases         Purchase[]
+  pointsHistory     PointsHistory[]
+  wishlist          WishlistItem[]
+  damageReports     DamageReport[]   @relation("ReportedBy")
+  merchantProfile   Merchant?
+  verificationDocs  VerificationDoc[]
+}
+
+model Merchant {
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id])
+  businessName    String
+  verified        Boolean   @default(false)
+  cars            Car[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Car {
+  id              String         @id @default(uuid())
+  merchantId      String
+  merchant        Merchant       @relation(fields: [merchantId], references: [id])
+  make            String
+  model           String
+  year            Int
+  type            String         // SEDAN, SUV, SPORTS, LUXURY, VAN, TRUCK
+  price           Float          // Purchase price
+  rentalPrice     Float          // Price per day
+  location        String
+  coordinates     String         // Stored as JSON string
+  availability    Boolean        @default(true)
+  maintenance     Boolean        @default(false)
+  images          String         // Stored as JSON array string
+  specifications  String         // Stored as JSON string
+  rentals         Rental[]
+  purchases       Purchase[]
+  wishlist        WishlistItem[]
+  damageReports   DamageReport[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Rental {
+  id              String         @id @default(uuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id])
+  carId           String
+  car             Car            @relation(fields: [carId], references: [id])
+  startDate       DateTime
+  endDate         DateTime
+  status          String         // PENDING, ACTIVE, COMPLETED, CANCELLED
+  initialOdometer Float
+  finalOdometer   Float?
+  totalPrice      Float
+  pointsEarned    Int?
+  damageReports   DamageReport[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Purchase {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  carId       String
+  car         Car       @relation(fields: [carId], references: [id])
+  price       Float
+  pointsUsed  Int       @default(0)
+  status      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model PointsHistory {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  points      Int
+  type        String    // EARNED, SPENT
+  rentalId    String?
+  createdAt   DateTime  @default(now())
+}
+
+model WishlistItem {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  carId     String
+  car       Car       @relation(fields: [carId], references: [id])
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, carId])
+}
+
+model DamageReport {
+  id          String    @id @default(uuid())
+  rentalId    String
+  rental      Rental    @relation(fields: [rentalId], references: [id])
+  carId       String
+  car         Car       @relation(fields: [carId], references: [id])
+  reportedById String
+  reportedBy  User      @relation("ReportedBy", fields: [reportedById], references: [id])
+  description String
+  images      String    // Stored as JSON array string
+  status      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model VerificationDoc {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  type        String    // LICENSE, BUSINESS_REGISTRATION
+  documentUrl String
+  verified    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
