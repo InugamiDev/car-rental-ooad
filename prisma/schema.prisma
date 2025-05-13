@@ -1,0 +1,42 @@
+datasource db {
+  provider = "postgresql" // Or your chosen database
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Car {
+  id                 String    @id @default(cuid())
+  imageURL           String?
+  name               String
+  costPerDay         String?   // Consider using Decimal or Int if appropriate
+  costIfExtend       String?   // Consider using Decimal or Int
+  scrapedCarType     String?
+  normalizedCategory String?
+  passengerCapacity  Int?
+  luggageCapacity    String?
+  transmission       String?
+  fuelType           String?
+  description        String?   // Added based on previous car detail page
+  price              String?   // For sale price, consider Decimal or Int
+  year               Int?      // Added based on previous API
+  availabilityForSale Boolean  @default(false)
+  availabilityForRent Boolean  @default(false)
+  images             String[]  // Array of image URLs
+  specs              String[]  // Array of spec strings
+  sourceUrl          String?
+  scrapeTimestamp    DateTime? @default(now())
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
