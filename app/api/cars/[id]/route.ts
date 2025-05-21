@@ -23,14 +23,17 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  return NextResponse.json({ message: `Car ${params.id} updated successfully (placeholder)` });
+  const carId = (await params).id;
+
+  return NextResponse.json({ message: `Car ${carId} updated successfully (placeholder)` });
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  return NextResponse.json({ message: `Car ${params.id} deleted successfully (placeholder)` });
+  const carId = (await params).id;
+  return NextResponse.json({ message: `Car ${carId} deleted successfully (placeholder)` });
 }
