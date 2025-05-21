@@ -7,10 +7,10 @@ const cars = [
   { id: '4', name: 'BMW M3', type: 'Sports', year: 2022, price: 75000, rentalPricePerDay: 250, imageUrl: 'https://via.placeholder.com/300x200.png?text=M3', specs: ['Automatic', 'Petrol', '4 Seater', 'Performance'], availability: { forSale: false, forRent: true } },
 ];
 
-export async function GET(request: Request) {
+export async function GET() { // Removed unused 'request'
   return NextResponse.json(cars);
 }
 
-export async function POST(request: Request) {
+export async function POST() { // Removed unused 'request'
   return NextResponse.json({ message: 'Car created successfully (placeholder)' }, { status: 201 });
 }

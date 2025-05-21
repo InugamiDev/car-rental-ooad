@@ -1,77 +1,92 @@
 import Image from 'next/image';
+import Link from 'next/link'; // For the booking button
 
-const sampleCarDetail = {
-  id: '1',
-  name: 'Reliable Sedan Deluxe',
-  images: [
-    'https://via.placeholder.com/600x400.png?text=Sedan+Front',
-    'https://via.placeholder.com/600x400.png?text=Sedan+Side',
-    'https://via.placeholder.com/600x400.png?text=Sedan+Interior',
-    'https://via.placeholder.com/600x400.png?text=Sedan+Back',
-  ],
-  price: '$25,000 or $70/day',
-  description: 'A very reliable and comfortable sedan, perfect for city driving and long trips. Low mileage and well-maintained. Available for both sale and rental.',
-  specs: [
-    { label: 'Type', value: 'Sedan' },
-    { label: 'Transmission', value: 'Automatic' },
-    { label: 'Engine', value: '2.0L Petrol' },
-    { label: 'Mileage', value: '30,000 miles' },
-    { label: 'Color', value: 'Silver' },
-    { label: 'Seats', value: '5' },
-    { label: 'Fuel Efficiency', value: '25 MPG city / 35 MPG hwy' },
-  ],
-  isRental: true,
+// Mock data for a car - in a real app, this would be fetched based on params.id
+const getCarDetails = async (id: string) => {
+  // Simulate API call
+  console.log(`Fetching details for car ID: ${id}`); // For debugging
+  return {
+    id: id,
+    name: 'Toyota Vios',
+    imageUrl: 'https://via.placeholder.com/800x600.png?text=Toyota+Vios+Large', // Single large image
+    specs: [
+      { label: 'Seats', value: '5' },
+      { label: 'Transmission', value: 'Automatic' },
+      { label: 'Fuel', value: 'Petrol' },
+      { label: 'Air Conditioning', value: 'Yes' },
+      // Add more relevant specs if needed
+    ],
+    pricePerDay: '750,000 VND',
+    description: 'A popular and reliable choice for navigating Vietnam. Comfortable, fuel-efficient, and easy to drive, making it ideal for both city trips and longer explorations.',
+    // Points calculation example
+    pointsPerKm: 10,
+    exampleTripKm: 200,
+  };
 };
 
-
 export default async function CarDetailPage({ params }: { params: { id: string } }) {
-  const car = sampleCarDetail;
+  const car = await getCarDetails(params.id);
 
   if (!car) {
-    return <div>Car not found</div>;
+    return <div className="container mx-auto p-4 text-center">Car not found.</div>;
   }
 
+  const potentialPointsForExampleTrip = car.exampleTripKm * car.pointsPerKm;
+
   return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <div className="relative w-full h-96 mb-4 rounded-lg overflow-hidden shadow-lg">
-            <Image src={car.images[0]} alt={car.name} layout="fill" objectFit="cover" />
+    <div className="container mx-auto px-4 py-8">
+      <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+        <div className="md:flex">
+          {/* Image Section */}
+          <div className="md:w-1/2">
+            <div className="relative w-full h-80 md:h-[500px]"> {/* Adjusted height */}
+              <Image
+                src={car.imageUrl}
+                alt={`Image of ${car.name}`}
+                layout="fill"
+                objectFit="cover"
+                priority // Good for LCP
+              />
+            </div>
           </div>
-          <div className="flex overflow-x-scroll space-x-2 p-2 bg-gray-100 rounded-md">
-            {car.images.map((img, index) => (
-              <div key={index} className="relative w-24 h-16 flex-shrink-0 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#0057D9]">
-                <Image src={img} alt={`${car.name} thumbnail ${index + 1}`} layout="fill" objectFit="cover" />
-              </div>
-            ))}
-          </div>
-        </div>
 
-        <div>
-          <h1 className="text-3xl font-bold mb-2 text-[#212529]">{car.name}</h1>
-          <p className="text-2xl font-semibold text-[#0057D9] mb-4">{car.price}</p>
-          <p className="text-gray-700 mb-6">{car.description}</p>
+          {/* Details Section */}
+          <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-between">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+                Detailed View: {car.name}
+              </h1>
+              <p className="text-2xl font-semibold text-blue-600 mb-6">
+                Rental Cost: {car.pricePerDay} (Mock)
+              </p>
 
-          <h2 className="text-xl font-semibold mb-3 text-[#212529]">Specifications</h2>
-          <ul className="list-disc list-inside space-y-1 mb-6 text-[#212529]">
-            {car.specs.map((spec, index) => (
-              <li key={index}><span className="font-medium">{spec.label}:</span> {spec.value}</li>
-            ))}
-          </ul>
-          
-          <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-center">
-              {car.isRental ? 'Book This Car' : 'Purchase This Car'}
-            </h2>
-            {car.isRental && (
-              <div className="mb-4">
-                <label htmlFor="booking-date" className="block text-sm font-medium text-gray-700 mb-1">Select Date</label>
-                <input type="date" id="booking-date" name="booking-date" className="w-full p-2 border rounded-md" />
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">Key Specifications:</h2>
+              <ul className="list-disc list-inside space-y-1 mb-6 text-gray-600">
+                {car.specs.map((spec, index) => (
+                  <li key={index}>
+                    <span className="font-medium">{spec.label}:</span> {spec.value}
+                  </li>
+                ))}
+              </ul>
+              
+              <p className="text-gray-600 mb-6">{car.description}</p>
+            </div>
+
+            <div>
+              {/* Driving Distance Rewards Highlight */}
+              <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-6 rounded-md">
+                <h3 className="font-bold text-lg">Driving Distance Rewards!</h3>
+                <p>Earn <span className="font-bold">{car.pointsPerKm} Points per KM!</span></p>
+                <p>A {car.exampleTripKm}km trip in this car could earn you <span className="font-bold">{potentialPointsForExampleTrip.toLocaleString()} Points</span> towards great rewards!</p>
               </div>
-            )}
-            <button className="w-full bg-[#FF8C00] hover:bg-[#E67E00] text-white font-bold py-3 px-4 rounded-md text-lg">
-              {car.isRental ? 'Book Now' : 'Inquire to Buy'}
-            </button>
+
+              {/* Book Now Button */}
+              <Link href={`/booking/checkout?carId=${car.id}`} legacyBehavior>
+                <a className="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center font-bold py-3 px-4 rounded-md text-lg transition duration-150 ease-in-out">
+                  Book This Car & Collect Points
+                </a>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
