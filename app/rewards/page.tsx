@@ -43,7 +43,7 @@ const RewardsPage = () => {
               </div>
               <h3 className="text-2xl font-semibold mb-3 text-gray-700">3. Get Rewarded</h3>
               <p className="text-gray-600">
-                We'll (notionally) calculate <span className="font-bold text-orange-600">10 Points for EVERY kilometer</span> you drive.
+                We&apos;ll (notionally) calculate <span className="font-bold text-orange-600">10 Points for EVERY kilometer</span> you drive.
               </p>
             </div>
           </div>
@@ -109,7 +109,7 @@ const RewardsPage = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2 text-center">Exclusive Merchandise</h3>
                 <p className="text-gray-600 text-sm text-center">
-                  <span className="font-bold">8,000 Points</span> = <span className="font-bold text-yellow-600">'Vietnam Wheels' Travel Kit!</span>
+                  <span className="font-bold">8,000 Points</span> = <span className="font-bold text-yellow-600">&apos;Vietnam Wheels&apos; Travel Kit!</span>
                 </p>
               </div>
               <div className="bg-gray-50 p-3 text-center">

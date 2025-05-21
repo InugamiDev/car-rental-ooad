@@ -29,7 +29,7 @@ const BookingConfirmationPage = () => {
         <div className="bg-orange-50 p-4 rounded-lg my-6 border border-orange-200">
           <h2 className="text-lg font-semibold text-orange-600 mb-2">Points Earned:</h2>
           <p className="text-gray-700">
-            Well done! You're set to earn <span className="font-bold text-orange-500 text-xl">{mockPointsEarned.toLocaleString()} Driving Points</span> for this trip.
+            Well done! You&apos;re set to earn <span className="font-bold text-orange-500 text-xl">{mockPointsEarned.toLocaleString()} Driving Points</span> for this trip.
           </p>
           <p className="text-sm text-gray-600 mt-1">
             These will be (notionally) added to your account after your rental.

@@ -26,7 +26,7 @@ const CheckoutPage = () => {
         <div className="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
           <h2 className="text-xl font-semibold text-blue-700 mb-3">Rental Summary</h2>
           <p className="text-gray-700">
-            You're booking: <span className="font-semibold">{mockCarName}</span> for <span className="font-semibold">{mockRentalDays} Days</span> (Mock)
+            You&apos;re booking: <span className="font-semibold">{mockCarName}</span> for <span className="font-semibold">{mockRentalDays} Days</span> (Mock)
           </p>
         </div>
 

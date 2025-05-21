@@ -9,10 +9,9 @@ const sampleCars = [
   { id: '6', imageUrl: 'https://via.placeholder.com/300x200.png?text=Convertible', name: 'Sporty Convertible', pricePerDay: '$120/day', specs: [{ label: '2-door' }, { label: 'Auto' }, { label: 'Petrol' }], pointsPerDay: '~120', isRental: true },
 ];
 
-interface ListingGridProps extends Object { // Changed to Object to satisfy linter for empty interface
-  // Props for ListingGrid, if any, would go here.
-  // For now, it uses predefined sampleCars.
-}
+// Using Record<string, never> for an object type that should have no properties.
+// This is often preferred over an empty interface for clarity in such cases.
+type ListingGridProps = Record<string, never>;
 
 const ListingGrid: React.FC<ListingGridProps> = () => {
   const cars = sampleCars; // In a real app, this would likely come from props or state

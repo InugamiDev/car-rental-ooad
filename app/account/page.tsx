@@ -44,7 +44,7 @@ const AccountPage = () => {
             {mockPointsBalance.toLocaleString()} <span className="text-3xl">Points</span>
           </p>
           <p className="text-gray-600">
-            You're close to: <span className="font-semibold text-green-600">{mockNextReward}</span>!
+            You&apos;re close to: <span className="font-semibold text-green-600">{mockNextReward}</span>!
           </p>
         </section>
 
