@@ -15,6 +15,7 @@ function loadRentalData() {
 }
 
 // Transform rental data to standardized car format
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformRentalData(rentalData: any[]) {
   return rentalData.map((rental, index) => {
     // Parse price from Vietnamese format

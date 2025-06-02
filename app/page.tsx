@@ -337,7 +337,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 lg:gap-6 justify-center pt-4">
               <Link href="/cars">
-                <Button variant="secondary" size="lg" className="w-full sm:w-auto px-8 py-4 text-lg font-semibold">
+                <Button variant="primary" size="lg" className="w-full shadow-2xl sm:w-auto px-8 py-4 text-lg font-semibold">
                   Browse Cars
                 </Button>
               </Link>
@@ -345,7 +345,7 @@ export default function Home() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="w-full sm:w-auto px-8 py-4 text-lg font-semibold border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary transition-all duration-300"
+                  className="w-full sm:w-auto px-8 py-4 text-lg font-semibold border-2 border-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary transition-all duration-300"
                 >
                   Join Our Loyalty Program
                 </Button>

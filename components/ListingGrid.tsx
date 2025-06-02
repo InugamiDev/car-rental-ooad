@@ -1,12 +1,117 @@
 import CarCard from './CarCard';
 
 const sampleCars = [
-  { id: '1', imageUrl: 'https://via.placeholder.com/300x200.png?text=Sedan', name: 'Reliable Sedan', pricePerDay: '$25,000', specs: [{ label: '4-door' }, { label: 'Auto' }, { label: 'Petrol' }], pointsPerDay: '~200', isRental: false },
-  { id: '2', imageUrl: 'https://via.placeholder.com/300x200.png?text=SUV', name: 'Spacious SUV', pricePerDay: '$35,000', specs: [{ label: '5-door' }, { label: 'AWD' }, { label: 'Diesel' }], pointsPerDay: '~300', isRental: false },
-  { id: '3', imageUrl: 'https://via.placeholder.com/300x200.png?text=Hatchback', name: 'City Hatchback', pricePerDay: '$50/day', specs: [{ label: '5-door' }, { label: 'Manual' }, { label: 'Hybrid' }], pointsPerDay: '~50', isRental: true },
-  { id: '4', imageUrl: 'https://via.placeholder.com/300x200.png?text=Luxury+Car', name: 'Luxury Cruiser', pricePerDay: '$150/day', specs: [{ label: '2-door' }, { label: 'Auto' }, { label: 'Petrol' }], pointsPerDay: '~150', isRental: true },
-  { id: '5', imageUrl: 'https://via.placeholder.com/300x200.png?text=Van', name: 'Family Van', pricePerDay: '$40,000', specs: [{ label: '7-seater' }, { label: 'Auto' }, { label: 'Diesel' }], pointsPerDay: '~350', isRental: false },
-  { id: '6', imageUrl: 'https://via.placeholder.com/300x200.png?text=Convertible', name: 'Sporty Convertible', pricePerDay: '$120/day', specs: [{ label: '2-door' }, { label: 'Auto' }, { label: 'Petrol' }], pointsPerDay: '~120', isRental: true },
+  {
+    id: '1',
+    name: 'Reliable Sedan 2024',
+    brand: 'Honda',
+    model: 'Civic',
+    costPerDay: 75,
+    normalizedCategory: 'Sedan',
+    passengerCapacity: 4,
+    transmission: 'Automatic',
+    fuelType: 'Gasoline',
+    images: ['/placeholder-car.jpg'],
+    specs: ['4-door', 'Automatic', 'Air Conditioning', 'Bluetooth'],
+    availabilityForRent: true,
+    availabilityForSale: true,
+    salePrice: 25000,
+    averageRating: 4.3,
+    totalReviews: 15,
+    rentalStatus: 'AVAILABLE',
+  },
+  {
+    id: '2',
+    name: 'Spacious SUV 2023',
+    brand: 'Toyota',
+    model: 'RAV4',
+    costPerDay: 95,
+    normalizedCategory: 'SUV',
+    passengerCapacity: 5,
+    transmission: 'AWD',
+    fuelType: 'Hybrid',
+    images: ['/placeholder-car.jpg'],
+    specs: ['5-door', 'AWD', 'Hybrid Engine', 'Safety Pack'],
+    availabilityForRent: true,
+    availabilityForSale: true,
+    salePrice: 35000,
+    averageRating: 4.6,
+    totalReviews: 28,
+    rentalStatus: 'AVAILABLE',
+  },
+  {
+    id: '3',
+    name: 'City Hatchback 2024',
+    brand: 'Nissan',
+    model: 'Micra',
+    costPerDay: 50,
+    normalizedCategory: 'Hatchback',
+    passengerCapacity: 5,
+    transmission: 'Manual',
+    fuelType: 'Gasoline',
+    images: ['/placeholder-car.jpg'],
+    specs: ['5-door', 'Manual', 'Compact Size', 'Fuel Efficient'],
+    availabilityForRent: true,
+    availabilityForSale: false,
+    averageRating: 4.1,
+    totalReviews: 12,
+    rentalStatus: 'AVAILABLE',
+  },
+  {
+    id: '4',
+    name: 'Luxury Cruiser 2023',
+    brand: 'BMW',
+    model: 'X5',
+    costPerDay: 150,
+    normalizedCategory: 'Luxury',
+    passengerCapacity: 5,
+    transmission: 'Automatic',
+    fuelType: 'Gasoline',
+    images: ['/placeholder-car.jpg'],
+    specs: ['Premium Interior', 'Automatic', 'Luxury Package', 'Navigation'],
+    availabilityForRent: true,
+    availabilityForSale: false,
+    averageRating: 4.8,
+    totalReviews: 22,
+    rentalStatus: 'AVAILABLE',
+  },
+  {
+    id: '5',
+    name: 'Family Van 2024',
+    brand: 'Ford',
+    model: 'Transit',
+    costPerDay: 85,
+    normalizedCategory: 'Van',
+    passengerCapacity: 7,
+    transmission: 'Automatic',
+    fuelType: 'Diesel',
+    images: ['/placeholder-car.jpg'],
+    specs: ['7-seater', 'Automatic', 'Large Cargo', 'Family Friendly'],
+    availabilityForRent: true,
+    availabilityForSale: true,
+    salePrice: 40000,
+    averageRating: 4.4,
+    totalReviews: 18,
+    rentalStatus: 'AVAILABLE',
+  },
+  {
+    id: '6',
+    name: 'Sporty Convertible 2023',
+    brand: 'Mazda',
+    model: 'MX-5',
+    costPerDay: 120,
+    normalizedCategory: 'Convertible',
+    passengerCapacity: 2,
+    transmission: 'Manual',
+    fuelType: 'Gasoline',
+    images: ['/placeholder-car.jpg'],
+    specs: ['2-door', 'Manual', 'Sport Mode', 'Convertible Top'],
+    availabilityForRent: true,
+    availabilityForSale: false,
+    averageRating: 4.7,
+    totalReviews: 31,
+    rentalStatus: 'AVAILABLE',
+  },
 ];
 
 // Using Record<string, never> for an object type that should have no properties.
@@ -25,14 +130,8 @@ const ListingGrid: React.FC<ListingGridProps> = () => {
         {cars.map((car) => (
           <CarCard
             key={car.id}
-            id={car.id} // Added id prop
-            imageUrl={car.imageUrl}
-            name={car.name} // Changed from title to name
-            pricePerDay={car.pricePerDay} // Changed from price to pricePerDay
-            specs={car.specs}
-            pointsPerDay={car.pointsPerDay} // Added pointsPerDay
-            // isRental prop is no longer used in CarCard as per previous update,
-            // The button logic is now "View & Book"
+            car={car}
+            variant="default"
           />
         ))}
       </div>

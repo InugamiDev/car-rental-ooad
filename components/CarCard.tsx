@@ -76,7 +76,7 @@ const CarCard: React.FC<CarCardProps> = ({
       hover={true}
       interactive={true}
     >
-      <Link href={`/cars/${car.id}`} onClick={handleViewDetails}>
+      <Link href={`/cars/${car.id}`}>
         {/* Car Image */}
         <div className={clsx('relative overflow-hidden', imageHeight[variant])}>
           <Image
@@ -100,7 +100,7 @@ const CarCard: React.FC<CarCardProps> = ({
           {/* Featured Badge */}
           {variant === 'featured' && (
             <div className="absolute top-3 right-3">
-              <Badge variant="default" size="sm">
+              <Badge variant="primary" size="sm">
                 Featured
               </Badge>
             </div>

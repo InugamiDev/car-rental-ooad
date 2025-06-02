@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, Filter, Grid3X3, List, SortAsc, SortDesc } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -37,7 +37,7 @@ interface Pagination {
   limit: number;
 }
 
-export default function CarsPage() {
+function CarsPageContent() {
   const searchParams = useSearchParams();
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
@@ -394,5 +394,33 @@ export default function CarsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CarsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background">
+        <div className="container-responsive py-8">
+          <div className="animate-pulse space-y-8">
+            <div className="h-8 bg-muted rounded w-1/4"></div>
+            <div className="flex flex-col lg:flex-row gap-8">
+              <div className="lg:w-80 flex-shrink-0">
+                <div className="h-96 bg-muted rounded"></div>
+              </div>
+              <div className="flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {[1, 2, 3, 4, 5, 6].map(i => (
+                    <div key={i} className="h-64 bg-muted rounded"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <CarsPageContent />
+    </Suspense>
   );
 }

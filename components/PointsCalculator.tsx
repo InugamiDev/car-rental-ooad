@@ -91,7 +91,7 @@ const PointsCalculator: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-success-50 rounded-lg border border-success-200">
+                  <div className="flex items-center justify-between p-4 bg-success-50 rounded-lg border border-success-100">
                     <div>
                       <span className="text-body font-medium text-success-700">Final Points</span>
                       <div className="flex items-center space-x-2 mt-1">
@@ -140,7 +140,7 @@ const PointsCalculator: React.FC = () => {
               <p className="text-body-sm font-medium mb-1">21-50 km</p>
               <p className="text-caption text-muted-foreground">60 + 4 points per km above 20</p>
             </div>
-            <div className="text-center p-4 bg-success-50 rounded-lg border border-success-200">
+            <div className="text-center p-4 bg-success-50 rounded-lg border border-success-100">
               <div className="text-h3 font-bold text-success mb-2">5×</div>
               <p className="text-body-sm font-medium mb-1">51+ km</p>
               <p className="text-caption text-muted-foreground">180 + 5 points per km above 50</p>

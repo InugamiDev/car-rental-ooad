@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Brain, TrendingUp, TrendingDown, Target, Zap, AlertCircle,
-  DollarSign, Calendar, Users, Car, Clock, Award, Lightbulb,
-  BarChart3, PieChart, ArrowRight, RefreshCw, Download
+import {
+  Brain, TrendingUp, Target, Zap, AlertCircle,
+  DollarSign, Users, Car, Clock, Lightbulb,
+  BarChart3, ArrowRight, RefreshCw, Download
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { Card, CardContent, CardHeader } from '@/components/ui/Card';
@@ -19,7 +19,7 @@ interface AIInsight {
   potentialValue: number;
   actionable: boolean;
   recommendation: string;
-  data: any;
+  data: Record<string, unknown>;
 }
 
 interface PricingRecommendation {

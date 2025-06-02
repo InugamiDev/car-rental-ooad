@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Car, Users, Calendar, DollarSign, TrendingUp, TrendingDown,
+import {
+  Car, Users, Calendar, DollarSign, TrendingUp,
   AlertCircle, CheckCircle, Clock, MapPin, Settings, Plus,
-  BarChart3, PieChart, Activity, Eye
+  BarChart3, Eye
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/Card';
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
           <div>
             <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
             <p className="text-muted-foreground">
-              Welcome back! Here's what's happening with your car rental business.
+              Welcome back! Here&apos;s what&apos;s happening with your car rental business.
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -198,6 +198,7 @@ export default function AdminDashboard() {
               className="input"
               value={selectedTimeRange}
               onChange={(e) => setSelectedTimeRange(e.target.value as '7d' | '30d' | '90d')}
+              title="Select time range"
             >
               <option value="7d">Last 7 days</option>
               <option value="30d">Last 30 days</option>

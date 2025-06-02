@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { authOptions, AppSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
 
@@ -12,9 +12,9 @@ const updateProfileSchema = z.object({
   driverLicense: z.string().optional(),
 });
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as AppSession;
     
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as AppSession;
     
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -97,7 +97,7 @@ export async function PUT(request: NextRequest) {
     
     // Remove undefined values
     const updateData = Object.fromEntries(
-      Object.entries(validatedData).filter(([_, value]) => value !== undefined)
+      Object.entries(validatedData).filter(([, value]) => value !== undefined)
     );
     
     const updatedUser = await prisma.user.update({

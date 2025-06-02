@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { 
-  Star, Users, Fuel, Settings, MapPin, Calendar, 
-  Clock, Shield, Award, ArrowLeft, Share2, Heart
+import {
+  Star, Users, Fuel, Settings, MapPin,
+  Shield, Award, ArrowLeft, Share2, Heart
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -56,7 +56,6 @@ export default function CarDetailsPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [showBookingForm, setShowBookingForm] = useState(false);
 
   useEffect(() => {
     const fetchCarDetails = async () => {
@@ -101,8 +100,6 @@ export default function CarDetailsPage() {
         totalCost: totalCost.toString()
       });
       window.location.href = `/booking/checkout?${searchParams.toString()}`;
-    } else {
-      setShowBookingForm(true);
     }
   };
 
@@ -138,7 +135,7 @@ export default function CarDetailsPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Car Not Found</h1>
-          <p className="text-muted-foreground mb-6">The car you're looking for doesn't exist.</p>
+          <p className="text-muted-foreground mb-6">The car you&apos;re looking for doesn&apos;t exist.</p>
           <Link href="/cars">
             <Button variant="primary">Browse All Cars</Button>
           </Link>
@@ -206,6 +203,7 @@ export default function CarDetailsPage() {
                     className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all ${
                       selectedImageIndex === index ? 'border-primary' : 'border-transparent'
                     }`}
+                    title={`View ${car.name} image ${index + 1}`}
                   >
                     <Image
                       src={image}

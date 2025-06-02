@@ -15,6 +15,7 @@ function loadRentalData() {
 }
 
 // Transform single rental item to car format (same logic as in cars/route.ts)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformRentalItem(rental: any, index: number) {
   // Parse price from Vietnamese format
   const priceMatch = rental.price?.match(/[\d,]+/);

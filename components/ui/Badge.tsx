@@ -2,7 +2,7 @@ import React from 'react';
 import { clsx } from 'clsx';
 
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'neutral';
+  variant?: 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info' | 'neutral';
   size?: 'sm' | 'md' | 'lg';
   dot?: boolean;
 }
@@ -22,19 +22,22 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
 
     const variantClasses = {
       default: [
-        'bg-primary-50 text-primary-700 border border-primary-200'
+        'bg-muted text-muted-foreground border border-border'
+      ],
+      primary: [
+        'bg-primary text-primary-foreground shadow-sm'
       ],
       success: [
-        'bg-success-50 text-success-700 border border-success-200'
+        'bg-success text-success-foreground shadow-sm'
       ],
       warning: [
-        'bg-warning-50 text-warning-700 border border-warning-200'
+        'bg-warning text-warning-foreground shadow-sm'
       ],
       error: [
-        'bg-error-50 text-error-700 border border-error-200'
+        'bg-error text-error-foreground shadow-sm'
       ],
       info: [
-        'bg-info-50 text-info-700 border border-info-200'
+        'bg-info text-info-foreground shadow-sm'
       ],
       neutral: [
         'bg-neutral-100 text-neutral-700 border border-neutral-200'

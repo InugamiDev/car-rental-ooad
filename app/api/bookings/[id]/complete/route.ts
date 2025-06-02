@@ -12,7 +12,7 @@ interface CompleteBookingBody {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions) as AppSession;
@@ -29,7 +29,8 @@ export async function POST(
       );
     }
     
-    const bookingId = params.id;
+    const resolvedParams = await params;
+    const bookingId = resolvedParams.id;
     const body: CompleteBookingBody = await request.json();
     
     // Find the booking

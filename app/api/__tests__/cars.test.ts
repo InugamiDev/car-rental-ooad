@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest } from 'next/server';
 import { GET, POST } from '../cars/route';
 
@@ -179,8 +181,8 @@ describe('Data transformation functions', () => {
       if (testCase.expectedDefault) {
         expect(data.cars[0].costPerDay).toBe(testCase.expectedDefault);
       } else {
-        expect(data.cars[0].costPerDay).toBeGreaterThanOrEqual(testCase.expectedMin);
-        expect(data.cars[0].costPerDay).toBeLessThanOrEqual(testCase.expectedMax);
+        expect(data.cars[0].costPerDay).toBeGreaterThanOrEqual(testCase.expectedMin!);
+        expect(data.cars[0].costPerDay).toBeLessThanOrEqual(testCase.expectedMax!);
       }
     });
   });

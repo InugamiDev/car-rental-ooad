@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   TrendingUp, DollarSign, Car, Users, Calendar, MapPin,
-  BarChart3, PieChart, Activity, Download, Filter, RefreshCw
+  BarChart3, Download, RefreshCw
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { Card, CardContent, CardHeader } from '@/components/ui/Card';
@@ -34,7 +34,6 @@ export default function AnalyticsPage() {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedTimeRange, setSelectedTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
-  const [selectedMetric, setSelectedMetric] = useState<'revenue' | 'bookings' | 'utilization'>('revenue');
 
   useEffect(() => {
     const fetchAnalyticsData = async () => {
@@ -205,7 +204,7 @@ export default function AnalyticsPage() {
             <select
               className="input"
               value={selectedTimeRange}
-              onChange={(e) => setSelectedTimeRange(e.target.value as any)}
+              onChange={(e) => setSelectedTimeRange(e.target.value as '7d' | '30d' | '90d' | '1y')}
               title="Select time range"
             >
               <option value="7d">Last 7 days</option>

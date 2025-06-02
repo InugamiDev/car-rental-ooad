@@ -126,7 +126,9 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
 
 CardHeader.displayName = 'CardHeader';
 
-interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+}
 
 const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, ...props }, ref) => {

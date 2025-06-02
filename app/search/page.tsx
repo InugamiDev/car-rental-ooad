@@ -1,31 +1,61 @@
-import CarCard from '@/components/CarCard'; // Assuming CarCard will be created/updated
+import CarCard from '@/components/CarCard';
 
 const SearchPage = () => {
-  // Mock car data - replace with actual data fetching later
+  // Mock car data - transform to match CarCard interface
   const mockCars = [
     {
       id: '1',
-      name: 'Toyota Vios',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=Toyota+Vios',
-      specs: [{ label: '5 Seats' }, { label: 'Automatic' }],
-      pricePerDay: '750,000 VND',
-      pointsPerDay: '~600',
+      name: 'Toyota Vios 2024',
+      brand: 'Toyota',
+      model: 'Vios',
+      costPerDay: 75,
+      normalizedCategory: 'Sedan',
+      passengerCapacity: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gasoline',
+      images: ['/placeholder-car.jpg'],
+      specs: ['5 Seats', 'Automatic', 'Air Conditioning', 'Bluetooth'],
+      availabilityForRent: true,
+      availabilityForSale: false,
+      averageRating: 4.5,
+      totalReviews: 23,
+      rentalStatus: 'AVAILABLE',
     },
     {
       id: '2',
-      name: 'Mitsubishi Xpander',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=Mitsubishi+Xpander',
-      specs: [{ label: '7 Seats' }, { label: 'Automatic' }],
-      pricePerDay: '900,000 VND',
-      pointsPerDay: '~720',
+      name: 'Mitsubishi Xpander 2023',
+      brand: 'Mitsubishi',
+      model: 'Xpander',
+      costPerDay: 95,
+      normalizedCategory: 'SUV',
+      passengerCapacity: 7,
+      transmission: 'Automatic',
+      fuelType: 'Gasoline',
+      images: ['/placeholder-car.jpg'],
+      specs: ['7 Seats', 'Automatic', 'Air Conditioning', 'USB Charging'],
+      availabilityForRent: true,
+      availabilityForSale: false,
+      averageRating: 4.7,
+      totalReviews: 34,
+      rentalStatus: 'AVAILABLE',
     },
     {
       id: '3',
-      name: 'VinFast Fadil',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=VinFast+Fadil',
-      specs: [{ label: '5 Seats' }, { label: 'Automatic' }],
-      pricePerDay: '600,000 VND',
-      pointsPerDay: '~480',
+      name: 'VinFast Fadil 2023',
+      brand: 'VinFast',
+      model: 'Fadil',
+      costPerDay: 60,
+      normalizedCategory: 'Hatchback',
+      passengerCapacity: 5,
+      transmission: 'Automatic',
+      fuelType: 'Gasoline',
+      images: ['/placeholder-car.jpg'],
+      specs: ['5 Seats', 'Automatic', 'Air Conditioning', 'Compact Size'],
+      availabilityForRent: true,
+      availabilityForSale: false,
+      averageRating: 4.2,
+      totalReviews: 18,
+      rentalStatus: 'AVAILABLE',
     },
   ];
 
@@ -56,12 +86,8 @@ const SearchPage = () => {
             {mockCars.map((car) => (
               <CarCard
                 key={car.id}
-                id={car.id}
-                name={car.name}
-                imageUrl={car.imageUrl}
-                specs={car.specs}
-                pricePerDay={car.pricePerDay}
-                pointsPerDay={car.pointsPerDay}
+                car={car}
+                variant="default"
               />
             ))}
           </div>

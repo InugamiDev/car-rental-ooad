@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { 
-  Calendar, Clock, MapPin, CreditCard, Shield, 
-  ArrowLeft, Check, AlertCircle, Users, Fuel, Settings
+import {
+  Calendar, MapPin, CreditCard, Shield,
+  ArrowLeft, AlertCircle, Users, Fuel, Settings
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -28,13 +28,11 @@ interface Car {
   rentalStatus: string;
 }
 
-export default function CheckoutPage() {
+function CheckoutPageContent() {
   const searchParams = useSearchParams();
   const carId = searchParams?.get('carId');
   const startDate = searchParams?.get('startDate');
   const endDate = searchParams?.get('endDate');
-  const preCalculatedDays = searchParams?.get('days');
-  const preCalculatedTotal = searchParams?.get('totalCost');
 
   const [car, setCar] = useState<Car | null>(null);
   const [loading, setLoading] = useState(true);
@@ -162,7 +160,7 @@ export default function CheckoutPage() {
         const errorData = await response.json();
         setErrors({ submit: errorData.error.message || 'Failed to create booking' });
       }
-    } catch (error) {
+    } catch {
       setErrors({ submit: 'An error occurred while creating your booking' });
     } finally {
       setBookingLoading(false);
@@ -574,5 +572,28 @@ export default function CheckoutPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background">
+        <div className="container-responsive py-8">
+          <div className="animate-pulse space-y-8">
+            <div className="h-8 bg-muted rounded w-1/4"></div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-6">
+                <div className="h-32 bg-muted rounded"></div>
+                <div className="h-64 bg-muted rounded"></div>
+              </div>
+              <div className="h-96 bg-muted rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <CheckoutPageContent />
+    </Suspense>
   );
 }

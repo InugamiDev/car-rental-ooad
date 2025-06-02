@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Car, Plus, Search, Filter, MapPin, Calendar, Settings,
+import {
+  Car, Plus, Search, MapPin, Calendar, Settings,
   Battery, Fuel, AlertTriangle, CheckCircle, Clock, Wrench,
-  Smartphone, Navigation, Shield, Star, TrendingUp, Eye
+  Navigation, Shield, Star, TrendingUp, Eye
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -55,8 +55,6 @@ export default function FleetManagementPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('name');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -485,7 +483,7 @@ export default function FleetManagementPage() {
                   variant="outline" 
                   size="sm" 
                   fullWidth
-                  onClick={() => setSelectedVehicle(vehicle)}
+                  onClick={() => {}}
                 >
                   <Eye className="w-4 h-4 mr-1" />
                   Details
