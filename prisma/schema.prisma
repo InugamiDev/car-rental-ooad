@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql" // Or your chosen database
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -8,35 +8,235 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String             @id @default(cuid())
+  email             String             @unique
+  name              String?
+  password          String
+  phone             String?
+  address           String?
+  driverLicense     String?
+  loyaltyPoints     Int                @default(0)
+  membershipTier    MembershipTier     @default(BRONZE)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // Relations
+  rentalBookings    RentalBooking[]
+  salesInquiries    SalesInquiry[]
+  loyaltyHistory    LoyaltyPointTransaction[]
+  reviews           Review[]
+  
+  @@map("users")
 }
 
 model Car {
   id                 String    @id @default(cuid())
   imageURL           String?
   name               String
-  costPerDay         String?   // Consider using Decimal or Int if appropriate
-  costIfExtend       String?   // Consider using Decimal or Int
+  brand              String?
+  model              String?
+  costPerDay         Decimal?  // Changed to Decimal for precise pricing
+  costIfExtend       Decimal?  // Changed to Decimal
   scrapedCarType     String?
   normalizedCategory String?
   passengerCapacity  Int?
   luggageCapacity    String?
   transmission       String?
   fuelType           String?
-  description        String?   // Added based on previous car detail page
-  price              String?   // For sale price, consider Decimal or Int
-  year               Int?      // Added based on previous API
+  description        String?
+  salePrice          Decimal?  // Changed to Decimal for sale price
+  year               Int?
+  mileage            Int?      // Added mileage
+  licensePlate       String?   // Added license plate
   availabilityForSale Boolean  @default(false)
   availabilityForRent Boolean  @default(false)
+  rentalStatus       RentalStatus @default(AVAILABLE)
   images             String[]  // Array of image URLs
   specs              String[]  // Array of spec strings
   sourceUrl          String?
   scrapeTimestamp    DateTime? @default(now())
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
+  
+  // Relations
+  rentalBookings     RentalBooking[]
+  salesInquiries     SalesInquiry[]
+  reviews            Review[]
+  maintenanceRecords MaintenanceRecord[]
+  
+  @@map("cars")
+}
+
+model RentalBooking {
+  id                String        @id @default(cuid())
+  userId            String
+  carId             String
+  startDate         DateTime
+  endDate           DateTime
+  pickupLocation    String?
+  dropoffLocation   String?
+  totalCost         Decimal
+  drivingDistance   Int?          // Driving distance in kilometers
+  distanceExchange  Decimal?      // Distance exchange cost/credit
+  status            BookingStatus @default(PENDING)
+  paymentStatus     PaymentStatus @default(PENDING)
+  specialRequests   String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  
+  // Relations
+  user              User          @relation(fields: [userId], references: [id])
+  car               Car           @relation(fields: [carId], references: [id])
+  payment           Payment?
+  
+  @@map("rental_bookings")
+}
+
+model SalesInquiry {
+  id                String        @id @default(cuid())
+  userId            String
+  carId             String
+  inquiryType       InquiryType   @default(PURCHASE)
+  message           String?
+  contactPreference String?
+  phoneNumber       String?
+  status            InquiryStatus @default(NEW)
+  followUpDate      DateTime?
+  notes             String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  
+  // Relations
+  user              User          @relation(fields: [userId], references: [id])
+  car               Car           @relation(fields: [carId], references: [id])
+  
+  @@map("sales_inquiries")
+}
+
+model LoyaltyPointTransaction {
+  id              String              @id @default(cuid())
+  userId          String
+  points          Int
+  transactionType LoyaltyTransactionType
+  description     String
+  relatedBookingId String?
+  expiryDate      DateTime?
+  createdAt       DateTime            @default(now())
+  
+  // Relations
+  user            User                @relation(fields: [userId], references: [id])
+  
+  @@map("loyalty_point_transactions")
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  bookingId         String        @unique
+  amount            Decimal
+  paymentMethod     PaymentMethod
+  paymentStatus     PaymentStatus @default(PENDING)
+  transactionId     String?
+  paymentDate       DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  
+  // Relations
+  booking           RentalBooking @relation(fields: [bookingId], references: [id])
+  
+  @@map("payments")
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  userId      String
+  carId       String
+  rating      Int      @default(5) // 1-5 stars
+  comment     String?
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+  car         Car      @relation(fields: [carId], references: [id])
+  
+  @@map("reviews")
+}
+
+model MaintenanceRecord {
+  id            String   @id @default(cuid())
+  carId         String
+  maintenanceType String
+  description   String
+  cost          Decimal?
+  performedBy   String?
+  maintenanceDate DateTime
+  nextDueDate   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  car           Car      @relation(fields: [carId], references: [id])
+  
+  @@map("maintenance_records")
+}
+
+// Enums
+enum MembershipTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum RentalStatus {
+  AVAILABLE
+  RENTED
+  MAINTENANCE
+  OUT_OF_SERVICE
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  CASH
+  DIGITAL_WALLET
+}
+
+enum InquiryType {
+  PURCHASE
+  TRADE_IN
+  FINANCING
+  TEST_DRIVE
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  CONVERTED
+  CLOSED
+}
+
+enum LoyaltyTransactionType {
+  EARNED
+  REDEEMED
+  EXPIRED
+  BONUS
 }
