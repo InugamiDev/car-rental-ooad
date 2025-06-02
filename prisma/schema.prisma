@@ -78,6 +78,7 @@ model RentalBooking {
   totalCost         Decimal
   drivingDistance   Int?          // Driving distance in kilometers
   distanceExchange  Decimal?      // Distance exchange cost/credit
+  loyaltyPoints     Int?          // Points earned from this rental
   status            BookingStatus @default(PENDING)
   paymentStatus     PaymentStatus @default(PENDING)
   specialRequests   String?

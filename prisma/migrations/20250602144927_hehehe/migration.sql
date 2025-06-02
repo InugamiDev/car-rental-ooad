@@ -22,29 +22,57 @@ CREATE TYPE "InquiryStatus" AS ENUM ('NEW', 'CONTACTED', 'IN_PROGRESS', 'CONVERT
 -- CreateEnum
 CREATE TYPE "LoyaltyTransactionType" AS ENUM ('EARNED', 'REDEEMED', 'EXPIRED', 'BONUS');
 
--- AlterTable User - Add new fields
-ALTER TABLE "User" ADD COLUMN "phone" TEXT;
-ALTER TABLE "User" ADD COLUMN "address" TEXT;
-ALTER TABLE "User" ADD COLUMN "driverLicense" TEXT;
-ALTER TABLE "User" ADD COLUMN "loyaltyPoints" INTEGER NOT NULL DEFAULT 0;
-ALTER TABLE "User" ADD COLUMN "membershipTier" "MembershipTier" NOT NULL DEFAULT 'BRONZE';
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "name" TEXT,
+    "password" TEXT NOT NULL,
+    "phone" TEXT,
+    "address" TEXT,
+    "driverLicense" TEXT,
+    "loyaltyPoints" INTEGER NOT NULL DEFAULT 0,
+    "membershipTier" "MembershipTier" NOT NULL DEFAULT 'BRONZE',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
--- AlterTable Car - Modify and add fields
-ALTER TABLE "Car" ALTER COLUMN "costPerDay" TYPE DECIMAL(10,2);
-ALTER TABLE "Car" ALTER COLUMN "costIfExtend" TYPE DECIMAL(10,2);
-ALTER TABLE "Car" ADD COLUMN "brand" TEXT;
-ALTER TABLE "Car" ADD COLUMN "model" TEXT;
-ALTER TABLE "Car" ADD COLUMN "salePrice" DECIMAL(10,2);
-ALTER TABLE "Car" ADD COLUMN "mileage" INTEGER;
-ALTER TABLE "Car" ADD COLUMN "licensePlate" TEXT;
-ALTER TABLE "Car" ADD COLUMN "rentalStatus" "RentalStatus" NOT NULL DEFAULT 'AVAILABLE';
-ALTER TABLE "Car" ALTER COLUMN "price" TYPE DECIMAL(10,2);
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
--- Rename tables to follow naming convention
-ALTER TABLE "User" RENAME TO "users";
-ALTER TABLE "Car" RENAME TO "cars";
+-- CreateTable
+CREATE TABLE "cars" (
+    "id" TEXT NOT NULL,
+    "imageURL" TEXT,
+    "name" TEXT NOT NULL,
+    "brand" TEXT,
+    "model" TEXT,
+    "costPerDay" DECIMAL(65,30),
+    "costIfExtend" DECIMAL(65,30),
+    "scrapedCarType" TEXT,
+    "normalizedCategory" TEXT,
+    "passengerCapacity" INTEGER,
+    "luggageCapacity" TEXT,
+    "transmission" TEXT,
+    "fuelType" TEXT,
+    "description" TEXT,
+    "salePrice" DECIMAL(65,30),
+    "year" INTEGER,
+    "mileage" INTEGER,
+    "licensePlate" TEXT,
+    "availabilityForSale" BOOLEAN NOT NULL DEFAULT false,
+    "availabilityForRent" BOOLEAN NOT NULL DEFAULT false,
+    "rentalStatus" "RentalStatus" NOT NULL DEFAULT 'AVAILABLE',
+    "images" TEXT[],
+    "specs" TEXT[],
+    "sourceUrl" TEXT,
+    "scrapeTimestamp" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
--- CreateTable RentalBooking
+    CONSTRAINT "cars_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "rental_bookings" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -53,9 +81,9 @@ CREATE TABLE "rental_bookings" (
     "endDate" TIMESTAMP(3) NOT NULL,
     "pickupLocation" TEXT,
     "dropoffLocation" TEXT,
-    "totalCost" DECIMAL(10,2) NOT NULL,
+    "totalCost" DECIMAL(65,30) NOT NULL,
     "drivingDistance" INTEGER,
-    "distanceExchange" DECIMAL(10,2),
+    "distanceExchange" DECIMAL(65,30),
     "status" "BookingStatus" NOT NULL DEFAULT 'PENDING',
     "paymentStatus" "PaymentStatus" NOT NULL DEFAULT 'PENDING',
     "specialRequests" TEXT,
@@ -65,7 +93,7 @@ CREATE TABLE "rental_bookings" (
     CONSTRAINT "rental_bookings_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable SalesInquiry
+-- CreateTable
 CREATE TABLE "sales_inquiries" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -83,7 +111,7 @@ CREATE TABLE "sales_inquiries" (
     CONSTRAINT "sales_inquiries_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable LoyaltyPointTransaction
+-- CreateTable
 CREATE TABLE "loyalty_point_transactions" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -97,11 +125,11 @@ CREATE TABLE "loyalty_point_transactions" (
     CONSTRAINT "loyalty_point_transactions_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable Payment
+-- CreateTable
 CREATE TABLE "payments" (
     "id" TEXT NOT NULL,
     "bookingId" TEXT NOT NULL,
-    "amount" DECIMAL(10,2) NOT NULL,
+    "amount" DECIMAL(65,30) NOT NULL,
     "paymentMethod" "PaymentMethod" NOT NULL,
     "paymentStatus" "PaymentStatus" NOT NULL DEFAULT 'PENDING',
     "transactionId" TEXT,
@@ -112,7 +140,7 @@ CREATE TABLE "payments" (
     CONSTRAINT "payments_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable Review
+-- CreateTable
 CREATE TABLE "reviews" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -126,13 +154,13 @@ CREATE TABLE "reviews" (
     CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable MaintenanceRecord
+-- CreateTable
 CREATE TABLE "maintenance_records" (
     "id" TEXT NOT NULL,
     "carId" TEXT NOT NULL,
     "maintenanceType" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "cost" DECIMAL(10,2),
+    "cost" DECIMAL(65,30),
     "performedBy" TEXT,
     "maintenanceDate" TIMESTAMP(3) NOT NULL,
     "nextDueDate" TIMESTAMP(3),
@@ -141,6 +169,9 @@ CREATE TABLE "maintenance_records" (
 
     CONSTRAINT "maintenance_records_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "payments_bookingId_key" ON "payments"("bookingId");
@@ -171,31 +202,3 @@ ALTER TABLE "reviews" ADD CONSTRAINT "reviews_carId_fkey" FOREIGN KEY ("carId") 
 
 -- AddForeignKey
 ALTER TABLE "maintenance_records" ADD CONSTRAINT "maintenance_records_carId_fkey" FOREIGN KEY ("carId") REFERENCES "cars"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- Create indexes for better performance
-CREATE INDEX "rental_bookings_userId_idx" ON "rental_bookings"("userId");
-CREATE INDEX "rental_bookings_carId_idx" ON "rental_bookings"("carId");
-CREATE INDEX "rental_bookings_startDate_idx" ON "rental_bookings"("startDate");
-CREATE INDEX "rental_bookings_status_idx" ON "rental_bookings"("status");
-
-CREATE INDEX "sales_inquiries_userId_idx" ON "sales_inquiries"("userId");
-CREATE INDEX "sales_inquiries_carId_idx" ON "sales_inquiries"("carId");
-CREATE INDEX "sales_inquiries_status_idx" ON "sales_inquiries"("status");
-
-CREATE INDEX "loyalty_point_transactions_userId_idx" ON "loyalty_point_transactions"("userId");
-CREATE INDEX "loyalty_point_transactions_createdAt_idx" ON "loyalty_point_transactions"("createdAt");
-
-CREATE INDEX "reviews_carId_idx" ON "reviews"("carId");
-CREATE INDEX "reviews_rating_idx" ON "reviews"("rating");
-
-CREATE INDEX "maintenance_records_carId_idx" ON "maintenance_records"("carId");
-CREATE INDEX "maintenance_records_maintenanceDate_idx" ON "maintenance_records"("maintenanceDate");
-
-CREATE INDEX "cars_availabilityForRent_idx" ON "cars"("availabilityForRent");
-CREATE INDEX "cars_availabilityForSale_idx" ON "cars"("availabilityForSale");
-CREATE INDEX "cars_rentalStatus_idx" ON "cars"("rentalStatus");
-CREATE INDEX "cars_normalizedCategory_idx" ON "cars"("normalizedCategory");
-CREATE INDEX "cars_brand_idx" ON "cars"("brand");
-
-CREATE INDEX "users_email_idx" ON "users"("email");
-CREATE INDEX "users_membershipTier_idx" ON "users"("membershipTier");

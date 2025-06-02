@@ -2,208 +2,124 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions, AppSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { calculateLoyaltyPoints, applyTierMultiplier, getUserTier } from '@/lib/loyalty';
-
-interface CompleteBookingBody {
-  kilometers?: number;
-  actualEndDate?: string;
-  notes?: string;
-}
+import { calculateLoyaltyPoints } from '@/lib/loyalty';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions) as AppSession;
     
     if (!session?.user?.id) {
       return NextResponse.json(
-        { 
+        {
           error: {
             code: 'UNAUTHORIZED',
-            message: 'Authentication required'
+            message: 'Authentication required',
+            details: { action: 'login_required' }
           }
         },
         { status: 401 }
       );
     }
     
-    const resolvedParams = await params;
-    const bookingId = resolvedParams.id;
-    const body: CompleteBookingBody = await request.json();
-    
-    // Find the booking
+    // Get booking
     const booking = await prisma.rentalBooking.findUnique({
-      where: { id: bookingId },
+      where: {
+        id: params.id,
+      },
       include: {
-        user: {
-          select: {
-            id: true,
-            loyaltyPoints: true,
-            membershipTier: true
-          }
-        },
-        car: {
-          select: {
-            id: true,
-            name: true,
-            brand: true
-          }
-        }
+        user: true,
       }
     });
     
     if (!booking) {
       return NextResponse.json(
-        { 
+        {
           error: {
-            code: 'BOOKING_NOT_FOUND',
-            message: 'Booking not found'
+            code: 'NOT_FOUND',
+            message: 'Booking not found',
+            details: { bookingId: params.id }
           }
         },
         { status: 404 }
       );
     }
     
-    // Check if user owns this booking
+    // Verify booking belongs to user
     if (booking.userId !== session.user.id) {
       return NextResponse.json(
-        { 
+        {
           error: {
             code: 'FORBIDDEN',
-            message: 'You can only complete your own bookings'
+            message: 'Access denied',
+            details: { bookingId: params.id }
           }
         },
         { status: 403 }
       );
     }
     
-    // Check if booking can be completed
-    if (booking.status !== 'IN_PROGRESS' && booking.status !== 'CONFIRMED') {
-      return NextResponse.json(
-        { 
-          error: {
-            code: 'INVALID_STATUS',
-            message: 'Booking cannot be completed in current status',
-            details: { currentStatus: booking.status }
-          }
-        },
-        { status: 400 }
-      );
-    }
+    // Calculate loyalty points based on distance
+    const distance = booking.drivingDistance || 0;
+    const loyaltyResult = calculateLoyaltyPoints(distance);
     
-    // Calculate loyalty points if kilometers are provided
-    let loyaltyPointsEarned = 0;
-    let loyaltyBreakdown = null;
-    
-    if (body.kilometers && body.kilometers > 0) {
-      // Calculate base points using the loyalty formula
-      const pointsCalculation = calculateLoyaltyPoints(body.kilometers);
-      
-      // Apply tier multiplier
-      const currentTier = getUserTier(booking.user.loyaltyPoints);
-      loyaltyPointsEarned = applyTierMultiplier(pointsCalculation.points, booking.user.loyaltyPoints);
-      
-      loyaltyBreakdown = {
-        kilometers: body.kilometers,
-        basePoints: pointsCalculation.points,
-        tierMultiplier: currentTier.multiplier,
-        finalPoints: loyaltyPointsEarned,
-        formula: pointsCalculation.formula,
-        tier: pointsCalculation.tier
-      };
-    }
-    
-    // Complete the booking in a transaction
+    // Start a transaction to update booking and user
     const result = await prisma.$transaction(async (tx) => {
-      // Update booking status
+      // Update booking status and points
       const updatedBooking = await tx.rentalBooking.update({
-        where: { id: bookingId },
+        where: { id: booking.id },
         data: {
-          status: 'COMPLETED'
-        },
-        include: {
-          car: {
-            select: {
-              id: true,
-              name: true,
-              brand: true
-            }
-          }
+          status: 'COMPLETED',
+          loyaltyPoints: loyaltyResult.points,
         }
       });
       
-      // Update car status back to available
-      await tx.car.update({
-        where: { id: booking.carId },
+      // Create loyalty transaction
+      const loyaltyTransaction = await tx.loyaltyPointTransaction.create({
         data: {
-          rentalStatus: 'AVAILABLE'
+          userId: booking.userId,
+          points: loyaltyResult.points,
+          transactionType: 'EARNED',
+          description: `Earned from trip - ${distance}km journey`,
+          relatedBookingId: booking.id,
+          expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year expiry
         }
       });
       
-      // Award loyalty points if applicable
-      let loyaltyTransaction = null;
-      let updatedUser = null;
-      
-      if (loyaltyPointsEarned > 0) {
-        // Update user's loyalty points
-        updatedUser = await tx.user.update({
-          where: { id: session.user!.id },
-          data: {
-            loyaltyPoints: {
-              increment: loyaltyPointsEarned
-            }
+      // Update user's total points
+      const updatedUser = await tx.user.update({
+        where: { id: booking.userId },
+        data: {
+          loyaltyPoints: {
+            increment: loyaltyResult.points
           }
-        });
-        
-        // Create loyalty transaction record
-        loyaltyTransaction = await tx.loyaltyPointTransaction.create({
-          data: {
-            userId: session.user!.id,
-            points: loyaltyPointsEarned,
-            transactionType: 'EARNED',
-            description: `Earned from rental: ${booking.car.name}`,
-            relatedBookingId: bookingId
-          }
-        });
-        
-        // Check if user should be upgraded to a new tier
-        const newTier = getUserTier(updatedUser.loyaltyPoints);
-        if (newTier.name.toUpperCase() !== updatedUser.membershipTier) {
-          await tx.user.update({
-            where: { id: session.user!.id },
-            data: {
-              membershipTier: newTier.name.toUpperCase() as 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM'
-            }
-          });
         }
-      }
+      });
       
       return {
         booking: updatedBooking,
         loyaltyTransaction,
-        loyaltyPointsEarned,
-        newLoyaltyBalance: updatedUser?.loyaltyPoints || booking.user.loyaltyPoints
+        userPoints: updatedUser.loyaltyPoints,
       };
     });
     
     return NextResponse.json({
       success: true,
       message: 'Booking completed successfully',
-      booking: result.booking,
-      loyaltyReward: loyaltyPointsEarned > 0 ? {
-        pointsEarned: loyaltyPointsEarned,
-        breakdown: loyaltyBreakdown,
-        newBalance: result.newLoyaltyBalance,
-        transactionId: result.loyaltyTransaction?.id
-      } : null
+      data: {
+        bookingId: result.booking.id,
+        pointsEarned: loyaltyResult.points,
+        totalPoints: result.userPoints,
+        tier: loyaltyResult.tier,
+      }
     });
     
   } catch (error) {
-    console.error('Booking completion error:', error);
+    console.error('Error completing booking:', error);
     return NextResponse.json(
-      { 
+      {
         error: {
           code: 'INTERNAL_ERROR',
           message: 'Failed to complete booking',
