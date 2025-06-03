@@ -6,7 +6,7 @@ import { calculateLoyaltyPoints } from '@/lib/loyalty';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }>}
 ) {
   try {
     const session = await getServerSession(authOptions) as AppSession;
@@ -23,11 +23,11 @@ export async function POST(
         { status: 401 }
       );
     }
-    
+    const bookingId = (await params).id;
     // Get booking
     const booking = await prisma.rentalBooking.findUnique({
       where: {
-        id: params.id,
+        id: bookingId,
       },
       include: {
         user: true,
@@ -40,7 +40,7 @@ export async function POST(
           error: {
             code: 'NOT_FOUND',
             message: 'Booking not found',
-            details: { bookingId: params.id }
+            details: { bookingId: bookingId}
           }
         },
         { status: 404 }
@@ -54,7 +54,7 @@ export async function POST(
           error: {
             code: 'FORBIDDEN',
             message: 'Access denied',
-            details: { bookingId: params.id }
+            details: { bookingId: bookingId }
           }
         },
         { status: 403 }

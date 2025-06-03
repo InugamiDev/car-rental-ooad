@@ -101,9 +101,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     };
 
     const leftIconClasses = clsx(
-      'absolute left-3 transform  translate-y-1/2 text-muted-foreground pointer-events-none',
-      iconSizeClasses[inputSize],
-      iconPositionClasses[inputSize]
+      'absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none',
+      iconSizeClasses[inputSize]
     );
 
     const rightIconClasses = clsx(

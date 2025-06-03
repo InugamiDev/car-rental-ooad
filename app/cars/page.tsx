@@ -216,19 +216,21 @@ function CarsPageContent() {
                 {/* Price Range */}
                 <div>
                   <label className="block text-sm font-medium mb-2">Price Range (per day)</label>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Min"
-                      type="number"
-                      value={priceRange.min}
-                      onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
-                    />
-                    <Input
-                      placeholder="Max"
-                      type="number"
-                      value={priceRange.max}
-                      onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
-                    />
+                  <div className="flex flex-col sm:flex-row gap-2">
+                  <Input
+                    placeholder="Min"
+                    type="number"
+                    value={priceRange.min}
+                    onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
+                    fullWidth
+                  />
+                  <Input
+                    placeholder="Max"
+                    type="number"
+                    value={priceRange.max}
+                    onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
+                    fullWidth
+                  />
                   </div>
                 </div>
 

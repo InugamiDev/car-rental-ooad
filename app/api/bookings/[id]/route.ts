@@ -5,11 +5,11 @@ import prisma from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions) as AppSession;
-    
+    const anyId = (await params).id
     if (!session?.user?.id) {
       return NextResponse.json(
         {
@@ -26,7 +26,7 @@ export async function GET(
     // Get booking details
     const booking = await prisma.rentalBooking.findUnique({
       where: {
-        id: params.id,
+        id: anyId,
       },
       include: {
         car: {
@@ -57,7 +57,7 @@ export async function GET(
           error: {
             code: 'NOT_FOUND',
             message: 'Booking not found',
-            details: { bookingId: params.id }
+            details: { bookingId: anyId }
           }
         },
         { status: 404 }
@@ -71,7 +71,7 @@ export async function GET(
           error: {
             code: 'FORBIDDEN',
             message: 'Access denied',
-            details: { bookingId: params.id }
+            details: { bookingId: anyId }
           }
         },
         { status: 403 }

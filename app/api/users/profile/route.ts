@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions, AppSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { MembershipTier, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 type UserWithRelations = Prisma.UserGetPayload<{
   select: {
@@ -40,7 +40,7 @@ type UserWithRelations = Prisma.UserGetPayload<{
     };
   };
 }>;
-
+//eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions) as AppSession;

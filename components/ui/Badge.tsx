@@ -28,7 +28,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         'bg-primary text-primary-foreground shadow-sm'
       ],
       success: [
-        'bg-success text-success-foreground shadow-sm'
+        'bg-green-500 text-white shadow-sm'
       ],
       warning: [
         'bg-warning text-warning-foreground shadow-sm'

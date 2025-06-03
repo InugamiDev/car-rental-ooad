@@ -1,3 +1,5 @@
+'use client';
+
 import CarCard from '@/components/CarCard';
 
 const SearchPage = () => {

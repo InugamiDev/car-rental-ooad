@@ -19,13 +19,18 @@ export const metadata: Metadata = {
   title: "Vietnam Wheels - Premium Car Rental Services",
   description: "Premium car rental services in Vietnam. Choose from our wide selection of vehicles with transparent pricing, 24/7 support, and exceptional customer service.",
   keywords: "car rental, Vietnam, premium vehicles, car hire, transportation",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   openGraph: {
     title: "Vietnam Wheels - Premium Car Rental Services",
     description: "Premium car rental services in Vietnam with transparent pricing and excellent service.",
     type: "website",
     locale: "en_US",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

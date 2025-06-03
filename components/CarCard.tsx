@@ -176,22 +176,22 @@ const CarCard: React.FC<CarCardProps> = ({
 
         <CardFooter className="p-4 pt-0 space-y-3">
           {/* Pricing Row - Enhanced */}
-          <div className="flex items-center justify-between w-full">
-            <div>
-              <div className="flex items-baseline space-x-1">
-                <span className="text-xl lg:text-2xl font-bold text-foreground">
+          <div className="flex items-center justify-between w-full min-w-0">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-baseline space-x-1 flex-wrap">
+                <span className="text-lg lg:text-xl font-bold text-foreground truncate">
                   ${car.costPerDay}
                 </span>
-                <span className="text-sm text-muted-foreground">/day</span>
+                <span className="text-sm text-muted-foreground whitespace-nowrap">/day</span>
               </div>
               {showSalePrice && car.availabilityForSale && car.salePrice && (
-                <div className="text-sm text-success font-medium">
+                <div className="text-sm text-success font-medium truncate">
                   Sale: ${car.salePrice.toLocaleString()}
                 </div>
               )}
             </div>
             {car.averageRating && (
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
                 <span className="text-sm font-medium text-foreground">
                   {car.averageRating}

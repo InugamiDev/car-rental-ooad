@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     
     // Build filter conditions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     
     const category = searchParams.get('category');
