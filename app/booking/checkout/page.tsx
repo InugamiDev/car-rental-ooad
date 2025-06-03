@@ -16,7 +16,7 @@ interface Car {
   id: string;
   name: string;
   brand: string;
-  price: number;
+  costPerDay: number;
   costIfExtend: number;
   normalizedCategory: string;
   passengerCapacity: number;
@@ -91,7 +91,7 @@ function CheckoutPageContent() {
     const end = new Date(formData.endDate);
     const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
     
-    const subtotal = days * car.price;
+    const subtotal = days * car.costPerDay;
     const taxes = subtotal * 0.12; // 12% tax
     const total = subtotal + taxes;
 
@@ -542,7 +542,7 @@ function CheckoutPageContent() {
                     <div className="space-y-2 pt-4 border-t">
                       <div className="flex justify-between text-sm">
                         <span>Daily rate:</span>
-                        <span>${car.price}/day</span>
+                        <span>${car.costPerDay}/day</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Subtotal ({days} days):</span>
