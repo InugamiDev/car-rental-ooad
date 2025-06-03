@@ -318,6 +318,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* AI Assistant */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <div dangerouslySetInnerHTML={{
+          __html: '<elevenlabs-convai agent-id="agent_01jwkdefy3ebqbxb38bbk50589"></elevenlabs-convai>'
+        }} />
+      </div>
+
       {/* CTA Section */}
       <section className="py-16 lg:py-24 bg-primary text-primary-foreground relative overflow-hidden">
         {/* Background Pattern */}
