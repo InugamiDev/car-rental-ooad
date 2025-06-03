@@ -164,7 +164,7 @@ export default function CarDetailsPage() {
           <div className="space-y-4">
             <div className="relative aspect-video rounded-xl overflow-hidden bg-muted">
               <Image
-                src={car.images[selectedImageIndex] || '/placeholder-car.jpg'}
+                src={(car.images && car.images[selectedImageIndex]) || '/placeholder-car.jpg'}
                 alt={car.name}
                 fill
                 className="object-cover"
@@ -194,7 +194,7 @@ export default function CarDetailsPage() {
             </div>
 
             {/* Thumbnail Gallery */}
-            {car.images.length > 1 && (
+            {car.images && car.images.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
                 {car.images.slice(0, 4).map((image, index) => (
                   <button
@@ -341,7 +341,7 @@ export default function CarDetailsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {car.specs.map((spec, index) => (
+                {car.specs && car.specs.map((spec, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-primary rounded-full"></div>
                     <span className="text-sm">{spec}</span>
@@ -363,7 +363,7 @@ export default function CarDetailsPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-2">
-                {car.features.map((feature, index) => (
+                {car.features && car.features.map((feature, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-success" />
                     <span className="text-sm">{feature}</span>
@@ -379,7 +379,7 @@ export default function CarDetailsPage() {
               <h3 className="font-semibold">Customer Reviews</h3>
             </CardHeader>
             <CardContent>
-              {car.reviews.length > 0 ? (
+              {car.reviews && car.reviews.length > 0 ? (
                 <div className="space-y-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold">{car.averageRating}</div>

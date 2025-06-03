@@ -213,9 +213,9 @@ function CheckoutPageContent() {
       <div className="container-responsive py-8">
         {/* Header */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
-          <Link href={`/cars/${car.id}`} className="hover:text-primary flex items-center gap-1">
+          <Link href={`/cars`} className="hover:text-primary flex items-center gap-1">
             <ArrowLeft className="w-4 h-4" />
-            Back to {car.name}
+            Back to Browsing
           </Link>
         </div>
 
